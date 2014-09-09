@@ -1,0 +1,30 @@
+<html ng-app>
+<head>
+  <script src="../../bower_components/angular/angular.js"></script>
+  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.css"/>
+  <script>
+
+    function myCtrl() {
+      this.clicks = 0;
+    }
+
+    function addOne(btn) {
+      var scope = angular.element(btn).scope();
+      scope.$apply(function () {
+        scope.ctrl.clicks++;
+      });
+    }
+
+  </script>
+</head>
+<body ng-controller="myCtrl as ctrl">
+<div class="container">
+
+  <form>
+    <label> Clicks </label>: {{ctrl.clicks}}
+
+    <button class="btn btn-default" onclick="addOne(this)">Add</button>
+  </form>
+</div>
+</body>
+</html>

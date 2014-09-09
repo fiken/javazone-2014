@@ -1,0 +1,34 @@
+<html ng-app>
+<head>
+  <script src="../../bower_components/angular/angular.js"></script>
+  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.css"/>
+  <script>
+
+    function myCtrl() {
+      this.performanceNow = performance.now();
+    }
+
+    function startInterval(btn) {
+
+      var scope = angular.element(btn).scope();
+
+      setInterval(function () {
+        scope.$apply(function () {
+          scope.ctrl.performanceNow = performance.now();
+        });
+      },100);
+
+    }
+
+  </script>
+</head>
+<body ng-controller="myCtrl as ctrl">
+<div class="container">
+
+  <h1>Performance now: {{ctrl.performanceNow}}</h1>
+
+  <button class="btn btn-default" onclick="startInterval(this)">Kjør!</button>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<html ng-app="MyJzApp">
+<head>
+  <script src="../../bower_components/angular/angular.js"></script>
+  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.css"/>
+  <script>
+//  IIFE to avoid polluting the global window scope
+    (function () {
+//    Creating a new module jzConstants and registering a constant
+      angular.module('jzConstants',[])
+          .constant('title', 'Mr. Manager')
+
+    }());
+
+    (function () {
+//      Get the jzConstants module that was created earlier. Add a new constant
+      angular.module('jzConstants')
+          .constant('adNames', ['Michael', 'George', 'Buster', 'Gob', 'George Michael', 'Tobias', 'Oscar', 'Annyoung', 'Lindsay', 'Lucielle', 'Maeby']);
+
+//      Creating the jzServices module and registering a the factory function that will create the 'names' service
+//      jzServices depends on jzConstants, so everything that's registrered to jzConstants is available in jzServices
+      angular.module('jzServices', ['jzConstants'])
+          .factory('names', namesFactory);
+
+//      The adNames constant from jzConstats is injected into the factory
+      function namesFactory(adNames) {
+        return {
+          random: function () {
+            return adNames[Math.floor( Math.random() * adNames.length )];
+          }
+        }
+      }
+
+    }());
+
+    (function () {
+//      Registering MyJzApp with a dependency on jzServices.
+      angular.module('MyJzApp', ['jzServices'])
+          .controller('myCtrl', myCtrl);
+
+//    Notice that the title constant from jzConstant is available because MyApp has an indirect dependency on jzConstants
+      function myCtrl(title, names) {
+        this.name = title+': '+names.random();
+      }
+
+    }());
+  </script>
+</head>
+<body>
+<div class="container">
+
+  <h1 ng-controller="myCtrl as ctrl">Hello {{ctrl.name}}</h1>
+
+</div>
+</body>
+</html>

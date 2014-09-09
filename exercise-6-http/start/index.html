@@ -1,0 +1,36 @@
+<html ng-app="MyApp">
+<head>
+  <script src="../../bower_components/angular/angular.js"></script>
+  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.css"/>
+  <script>
+    (function () {
+      function MongoLab() {
+        var mongoLabKey = 'urY8T0LnUfN2ewlRiZLpi0rFPNrmOQgf';
+        var collection = "shared-http";
+
+        function url(path) {
+          var rest = path ? path : "";
+
+          return "https://api.mongolab.com/api/1/databases/javazone-2014/collections/" + collection + "/" + rest + "?apiKey=" + mongoLabKey;
+        }
+
+        return {
+          url: url
+        };
+      }
+
+      var module = angular.module('MyApp', []);
+    })();
+  </script>
+</head>
+<body>
+<div class="container">
+
+  <h3>People</h3>
+
+  <table class="table table-striped">
+  </table>
+
+</div>
+</body>
+</html>

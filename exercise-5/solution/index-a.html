@@ -1,0 +1,30 @@
+<html ng-app="MyJzApp">
+<head>
+  <script src="../../bower_components/angular/angular.js"></script>
+  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.css"/>
+  <script>
+
+//  IIFE to avoid polluting the global window scope
+    (function () {
+
+//      Registering MyJzApp with zero dependencies, and adding the 'title' constant and 'myCtrl' controller
+      angular.module('MyJzApp',[])
+          .constant('title', 'Mr. Manager')
+          .controller('myCtrl', myCtrl);
+
+//      The 'title' constant is injected into
+      function myCtrl(title) {
+        this.name = title;
+      }
+
+    }());
+  </script>
+</head>
+<body ng-controller="myCtrl as ctrl">
+<div class="container">
+
+  <h1>Hello {{ctrl.name}}</h1>
+
+</div>
+</body>
+</html>

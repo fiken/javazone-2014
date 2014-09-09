@@ -1,0 +1,189 @@
+<html>
+<head>
+  <script src="../../bower_components/angular/angular.js"></script>
+  <script src="../../bower_components/angular-route/angular-route.js"></script>
+  <script src="../../bower_components/angular-cookies/angular-cookies.js"></script>
+  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.css"/>
+  <script>
+    (function () {
+      function MongoLab($cookies) {
+        var mongoLabKey = 'urY8T0LnUfN2ewlRiZLpi0rFPNrmOQgf';
+        var shared = true;
+        var collection = shared ? "shared-http" : $cookies.jz14Collection;
+
+        if (!collection) {
+          collection = "user-" + Math.floor(Math.random() * 10000);
+          $cookies.jz14Collection = collection;
+        }
+
+        function url(path) {
+          var rest = path ? path : "";
+
+          return "https://api.mongolab.com/api/1/databases/javazone-2014/collections/" + collection + "/" + rest + "?apiKey=" + mongoLabKey;
+        }
+
+        return {
+          url: url
+        };
+      }
+
+      function PersonService($http, MongoLab) {
+        console.info('PersonService');
+
+        function get(id) {
+          return $http.get(MongoLab.url(id));
+        }
+
+        function store(person) {
+          console.info('PersonService.store', person);
+          return $http.post(MongoLab.url(), person);
+        }
+
+        function remove(person) {
+          console.info('PersonService.delete', person);
+          return $http.delete(MongoLab.url(person._id.$oid));
+        }
+
+        function list() {
+          console.info('PersonService.list');
+          return $http.get(MongoLab.url());
+        }
+
+        return {
+          get: get,
+          store: store,
+          remove: remove,
+          list: list
+        }
+      }
+
+      function listCtrl(PersonService, persons) {
+        var ctrl = this;
+
+        console.info('listCtrl');
+
+        var updateList = function (res) {
+          if (angular.isArray(res.data)) {
+            ctrl.people = res.data;
+          } else {
+            ctrl.people.push(res.data);
+          }
+        };
+
+        ctrl.people = [];
+        ctrl.form = {};
+
+        ctrl.add = function () {
+          PersonService.store(ctrl.form).then(updateList);
+          ctrl.form = {};
+        };
+
+        ctrl.remove = function (person) {
+          PersonService.remove(person).then(function () {
+            var oid = person._id.$oid;
+            angular.forEach(ctrl.people, function (value, index) {
+              if (value._id.$oid == oid) {
+                ctrl.people.splice(index, 1);
+              }
+            })
+          });
+        };
+
+        updateList(persons);
+      }
+
+      function detailCtrl(person) {
+        var ctrl = this;
+
+        console.info('detailCtrl', person);
+
+        ctrl.person = person.data;
+      }
+
+      var module = angular.module('MyApp', ['ngCookies', 'ngRoute']);
+      module.
+          factory('MongoLab', MongoLab).
+          factory('PersonService', PersonService).
+          controller('listCtrl', listCtrl).
+          controller('detailCtrl', detailCtrl).
+          config(function ($routeProvider) {
+            $routeProvider.
+                when('/', {
+                  templateUrl: 'list.html',
+                  controller: 'listCtrl as ctrl',
+                  resolve: {
+                    persons: function (PersonService) {
+                      return PersonService.list();
+                    }
+                  }
+                }).
+                when('/:personId', {
+                  templateUrl: 'detail.html',
+                  controller: 'detailCtrl as ctrl',
+                  resolve: {
+                    person: function (PersonService, $route) {
+                      return PersonService.get($route.current.params.personId);
+                    }
+                  }
+                });
+          });
+    })();
+  </script>
+</head>
+<body ng-app="MyApp">
+
+<div class="container" ng-view></div>
+
+<script type="text/ng-template" id="list.html">
+  <div>
+    <h2>All people</h2>
+
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>_id</th>
+        <th>Name</th>
+      </tr>
+      </thead>
+      <tr ng-repeat="person in ctrl.people">
+        <td>{{person._id.$oid}}</td>
+        <td>{{person.name}}</td>
+        <td>
+          <button class="btn btn-default" ng-click="ctrl.remove(person)">remove</button>
+          <button class="btn btn-default" ng-click="ctrl.edit(person)">edit</button>
+          <a class="btn btn-default" ng-href="#/{{person._id.$oid}}">details</a>
+        </td>
+      </tr>
+    </table>
+
+    <h2>Register new</h2>
+
+    <form>
+      <label>
+        Name: <input class="form-control" type="text" ng-model="ctrl.form.name">
+      </label>
+
+      <button class="btn btn-default" ng-click="ctrl.add()">Add</button>
+    </form>
+
+    <pre>ctrl.people={{ctrl.people|json}}</pre>
+  </div>
+</script>
+
+<script type="text/ng-template" id="detail.html">
+  <div>
+    <h2>Details for {{ctrl.person.name}}</h2>
+
+    <table class="table">
+      <tbody>
+      <tr>
+        <th>Name</th>
+        <td>{{ctrl.person.name}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</script>
+
+</body>
+</html>

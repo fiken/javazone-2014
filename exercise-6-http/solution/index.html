@@ -1,0 +1,98 @@
+<html ng-app="MyApp">
+<head>
+  <script src="../../bower_components/angular/angular.js"></script>
+  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.css"/>
+  <script>
+    (function () {
+      function MongoLab() {
+        var mongoLabKey = 'urY8T0LnUfN2ewlRiZLpi0rFPNrmOQgf';
+        var collection = "shared-http"; // $cookies.jz14Collection;
+
+        if (!collection) {
+          collection = "user-" + Math.floor(Math.random() * 10000);
+          $cookies.jz14Collection = collection;
+        }
+
+        function url(path) {
+          var rest = path ? path : "";
+
+          return "https://api.mongolab.com/api/1/databases/javazone-2014/collections/" + collection + "/" + rest + "?apiKey=" + mongoLabKey;
+        }
+
+        return {
+          url: url
+        };
+      }
+
+      function PersonService($http, MongoLab) {
+        console.info('PersonService');
+
+        function store(person) {
+          return $http.post(MongoLab.url(), person);
+        }
+
+        function list() {
+          return $http.get(MongoLab.url());
+        }
+
+        return {
+          store: store,
+          list: list
+        }
+      }
+
+      function myCtrl(PersonService) {
+        console.info('myCtrl');
+        var ctrl = this;
+
+        ctrl.people = [];
+        ctrl.form = {};
+
+        ctrl.add = function () {
+          PersonService.store(ctrl.form).then(function (res) {
+            ctrl.people.push(res.data);
+          });
+          ctrl.form = {};
+        };
+
+        PersonService.list().then(function (res) {
+          ctrl.people = res.data;
+        });
+      }
+
+      var module = angular.module('MyApp', []);
+      module.
+          service('MongoLab', MongoLab).
+          service('PersonService', PersonService).
+          controller('myCtrl', myCtrl);
+    })();
+  </script>
+</head>
+<body ng-controller="myCtrl as ctrl">
+<div class="container">
+
+  <h3>People</h3>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>_id</th>
+      <th>Name</th>
+    </tr>
+    </thead>
+    <tr ng-repeat="person in ctrl.people">
+      <td>{{person._id.$oid}}</td>
+      <td>{{person.name}}</td>
+    </tr>
+  </table>
+
+  <form>
+    <label>
+      Name: <input class="form-control" type="text" ng-model="ctrl.form.name">
+    </label>
+
+    <button class="btn btn-default" ng-click="ctrl.add()">Add</button>
+  </form>
+</div>
+</body>
+</html>

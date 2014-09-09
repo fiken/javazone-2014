@@ -1,0 +1,59 @@
+<html>
+<head>
+  <script src="../../bower_components/angular/angular.js"></script>
+  <script src="../../bower_components/angular-cookies/angular-cookies.js"></script>
+  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.css"/>
+  <script>
+    (function () {
+      function MongoLab($cookies) {
+        var mongoLabKey = 'urY8T0LnUfN2ewlRiZLpi0rFPNrmOQgf';
+        var shared = true;
+        var collection = shared ? "shared-http" : $cookies.jz14Collection;
+
+        if (!collection) {
+          collection = "user-" + Math.floor(Math.random() * 10000);
+          $cookies.jz14Collection = collection;
+        }
+
+        function url(path) {
+          var rest = path ? path : "";
+
+          return "https://api.mongolab.com/api/1/databases/javazone-2014/collections/" + collection + "/" + rest + "?apiKey=" + mongoLabKey;
+        }
+
+        return {
+          url: url
+        };
+      }
+
+      function PersonService($http, MongoLab) {
+        console.info('PersonService');
+
+        function get(id) {
+          return $http.get(MongoLab.url(id));
+        }
+
+        function store(person) {
+          console.info('PersonService.store', person);
+          return $http.post(MongoLab.url(), person);
+        }
+
+        function list() {
+          console.info('PersonService.list');
+          return $http.get(MongoLab.url());
+        }
+
+        return {
+          get: get,
+          store: store,
+          list: list
+        }
+      }
+
+    })();
+  </script>
+</head>
+<body>
+
+</body>
+</html>

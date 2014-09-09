@@ -1,0 +1,31 @@
+<html ng-app>
+<head>
+  <script src="../../bower_components/angular/angular.js"></script>
+  <script>
+    function myCtrl() {
+      var ctrl = this;
+
+      ctrl.names = [
+        'trygve',
+        'joakim'
+      ];
+
+      this.add = function (name) {
+        ctrl.names.push(name);
+      }
+    }
+  </script>
+</head>
+<body ng-controller="myCtrl as ctrl">
+<ul>
+  <li ng-repeat="name in ctrl.names">{{name}}</li>
+</ul>
+<form>
+  <label>
+    Name: <input type="text" ng-model="name">
+  </label>
+
+  <button ng-click="ctrl.add(name)">Add</button>
+</form>
+</body>
+</html>

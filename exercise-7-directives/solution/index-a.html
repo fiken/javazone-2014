@@ -1,0 +1,52 @@
+<html ng-app="MyJzApp">
+<head>
+  <script src="../../bower_components/angular/angular.js"></script>
+  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.css"/>
+  <script>
+    (function () {
+
+      angular.module('MyJzApp', [])
+          .directive('jzReset', jzResetDirective);
+
+      function jzResetDirective($parse) {
+        return {
+          controller: function ($element, $scope, $attrs) {
+            var fn = $parse($attrs.jzReset);
+            $element.bind('reset', function (event) {
+              $scope.$apply(function () {
+                fn($scope);
+              });
+            })
+          }
+        }
+      }
+    }());
+
+  </script>
+</head>
+<body>
+<div class="container" ng-init="status = 'pristine'">
+
+  <h1>Oppgave 6a</h1>
+  <hr/>
+
+  <form name="myForm" class="form-inline" jz-reset="status = 'reset'; name =''">
+    <div class="form-group">
+      <label>
+        Name
+      </label>
+      <input class="form-control" type="text" ng-model="name" ng-change="status = 'dirty'">
+    </div>
+
+    <button type="reset" class="btn btn-default">Reset</button>
+  </form>
+
+
+  <p>Status: {{ status }}</p>
+  <p>Name: {{ name }}</p>
+</div>
+</body>
+</html>
+
+
+
