@@ -2,8 +2,6 @@
 
 I denne oppgaven så skal du lage en Angular-applikasjon som bruker `$http` for å prate med en database med brukere.
 
-TODO: noe om at denne oppgaven prøver å lage angular-idiomatisk kode.
-
 Tjenesten du skal bruke er MongoLab sitt API for å dytte data inn og ut av en Mongodb-collection (tabell i SQL-sjargong).
 Vi har laget en ferdig service for dere som heter `MongoLab` med en funksjon som heter `url` som kan bruke for å lage
 URLer på formen som oppgaven trenger.
@@ -36,7 +34,9 @@ URLen som genereres av `url('5409fb39e4b0f26affce02b0')` støtter disse HTTP-ver
 Lag en `PersonService` med en `list`-metode som henter alle personene i databasen. Servicen må registreres i Angular og
 ha en avhengighet på `$http`.
 
-TODO: lag en run() som gjør PersonService.list() og viser verdiene i console.
+Vi har lagt med en run-funksjon som er avhengig av `PersonService`. Denne funksjonen vil logge alle personene i databasen
+ når du er dersom oppgaven er løst på riktig måte.
+
 
 ## b)
 

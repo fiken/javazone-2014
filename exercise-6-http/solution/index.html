@@ -60,10 +60,20 @@
         });
       }
 
+      function logPersons(PersonService) {
+        PersonService.list().then(function (persons) {
+          console.log('Got '+persons.data.length+" persons!");
+          persons.data.forEach(function (person) {
+            console.log(person.name);
+          })
+        })
+      }
+
       var module = angular.module('MyApp', []);
       module.
           service('MongoLab', MongoLab).
           service('PersonService', PersonService).
+          run(logPersons).
           controller('myCtrl', myCtrl);
     })();
   </script>
