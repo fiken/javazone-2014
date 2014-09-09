@@ -9,7 +9,10 @@ telleren øke med 1.
 
 Få koden til å fungere ved å bruke onclick, istedenfor ng-click.
 
-//todo oppgave med $watch
+## c)
+
+Legg til denne teksten på siden: "Antall klikk x2: <dobbeltantall>". Dobbeltantall skal være en variabel som blir satt
+ved å watche antall-variabelen.
 
 ## c) Bonusoppgave!
 
